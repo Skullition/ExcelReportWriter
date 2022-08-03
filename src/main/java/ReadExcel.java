@@ -1,4 +1,3 @@
-import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.poi.ss.usermodel.Cell;
@@ -17,21 +16,31 @@ public class ReadExcel {
         try {
             XSSFWorkbook workbook = new XSSFWorkbook(new FileInputStream(args[0]));
             XSSFSheet sheet = workbook.getSheetAt(0);
-            Iterator<Row> iterator = sheet.iterator();
-            while (iterator.hasNext()) {
-                Row row = iterator.next();
+            for (Row row : sheet) {
                 // Iterate through all column for each row
+                if (row.getRowNum() == 0) {
+                    continue;
+                }
                 Iterator<Cell> cellIterator = row.cellIterator();
                 while (cellIterator.hasNext()) {
                     Cell cell = cellIterator.next();
-                    switch (cell.getCellType())
-                    {
+                    String cellContent;
+                    switch (cell.getCellType()) {
                         case NUMERIC:
+                            cellContent = String.valueOf(cell.getNumericCellValue());
+                            // below for testing
                             System.out.println(cell.getNumericCellValue());
                             break;
                         case STRING:
+                            cellContent = cell.getStringCellValue();
+                            // below for testing
                             System.out.println(cell.getStringCellValue());
                             break;
+                        default:
+                            throw new IllegalStateException("Unexpected value: " + cell.getCellType());
+                    }
+                    if (cellContent.startsWith("Tipe Report")) {
+                        continue;
                     }
                 }
             }
