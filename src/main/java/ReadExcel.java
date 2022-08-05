@@ -56,15 +56,24 @@ public class ReadExcel {
                     document.open();
                     if (cell.getAddress().getColumn() == 0) {
                         //
+                        if (cellContent.equalsIgnoreCase("Retail")) {
+
+                        } else if (cellContent.equalsIgnoreCase("B2B")) {
+
+                        } else if (cellContent.equalsIgnoreCase("R&B")) {
+
+                        } else if (cellContent.equalsIgnoreCase("Non BINUS")) {
+
+                        } else {
+                            throw new IllegalArgumentException();
+                        }
                     }
 
 
                 }
             }
 
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (DocumentException e) {
+        } catch (IOException | DocumentException e) {
             e.printStackTrace();
         }
     }
