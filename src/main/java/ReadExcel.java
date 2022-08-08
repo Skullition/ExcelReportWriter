@@ -12,11 +12,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Iterator;
-import java.util.Locale;
 
 public class ReadExcel {
     public static final Logger LOGGER = LogManager.getLogger();
-//        public static final String IMAGE_LOCATION = "greatnusa.jpg";
     public static final String GREATNUSA_IMAGE_URL = "https://greatnusa.com/pluginfile.php/1/theme_edumy/headerlogo2/1658542671/Great%20Nusa%20Logo-05_transparen_R.jpg";
 
     public static void main(String[] args) {
@@ -82,13 +80,15 @@ public class ReadExcel {
         Document document = new Document(PageSize.A4.rotate());
         PdfWriter.getInstance(document, new FileOutputStream("OutputReportAuthor.pdf"));
         document.open();
-        Paragraph headerPhrase = new Paragraph("LAPORAN PENJUALAN KURSUS", new Font(Font.FontFamily.HELVETICA, 16));
-        document.add(headerPhrase);
 
-        // TODO: Set image size
         Image image = Image.getInstance(new URL(GREATNUSA_IMAGE_URL));
+        image.setAlignment(Image.ALIGN_RIGHT);
+        image.scalePercent(5f);
 //        image.setAbsolutePosition(36, 400);
         document.add(image);
+
+        Paragraph headerPhrase = new Paragraph("LAPORAN PENJUALAN KURSUS", new Font(Font.FontFamily.HELVETICA, 16));
+        document.add(headerPhrase);
 
         document.close();
     }
