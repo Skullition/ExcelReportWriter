@@ -3,6 +3,7 @@
 **/build/
 !src/**/build/
 *.xlsx
+*.pdf
 
 # Ignore Gradle GUI config
 gradle-app.setting

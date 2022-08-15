@@ -90,18 +90,11 @@ public class ReadExcel {
     private void createRetail(List<String> cellValues) throws DocumentException, IOException {
         // Create new Document
         Document document = new Document(PageSize.A4.rotate());
-        PdfWriter.getInstance(document, new FileOutputStream(cellValues.get(1)));
+        PdfWriter.getInstance(document, new FileOutputStream(cellValues.get(1) + ".pdf"));
         document.open();
 
-        Image image = Image.getInstance(new URL(GREATNUSA_IMAGE_URL));
-        image.setAlignment(Image.ALIGN_RIGHT);
-        image.scalePercent(5f);
-        document.add(image);
+        addPdfHeader(document, cellValues.get(1), cellValues.get(2), cellValues.get(3), cellValues.get(cellValues.size() - 1), false);
 
-        Paragraph headerPhrase = new Paragraph("LAPORAN PENJUALAN KURSUS", new Font(Font.FontFamily.HELVETICA, 16));
-        document.add(headerPhrase);
-        //TODO: get value for total
-        addBodyParagraph(document, cellValues.get(1), cellValues.get(2), cellValues.get(3), cellValues.get(4));
         PdfPTable table = new PdfPTable(8);
         table.addCell(createHeaderCell("Nama Kursus"));
         table.addCell(createHeaderCell("Harga Kursus"));
@@ -116,19 +109,38 @@ public class ReadExcel {
         document.close();
     }
 
-    private void addBodyParagraph(Document document, String to, String email, String period, String total) throws DocumentException {
+    private void addPdfHeader(Document document, String to, String email, String period, String total, boolean isDoubleTable) throws DocumentException, IOException {
+        Paragraph headerPhrase = new Paragraph("LAPORAN PENJUALAN KURSUS", new Font(Font.FontFamily.HELVETICA, 16));
+        document.add(headerPhrase);
+        Image image = Image.getInstance(new URL(GREATNUSA_IMAGE_URL));
+        image.setAlignment(Image.ALIGN_RIGHT);
+        image.scalePercent(5f);
+        document.add(image);
+
         Font font = new Font(Font.FontFamily.HELVETICA, 11);
-        document.add(new Paragraph("Kepada: " + to, font));
-        document.add(new Paragraph("Email: " + email, font));
-        document.add(new Paragraph("Periode: " + period, font));
-        document.add(new Paragraph("Total: " + total, font));
+        document.add(new Paragraph("Kepada  : " + to, font));
+        document.add(new Paragraph("Email     : " + email, font));
+        document.add(new Paragraph("Periode : " + period, font));
+        Paragraph totalParagraph = new Paragraph("Total     : " + total, font);
+        totalParagraph.setSpacingAfter(50);
+        document.add(totalParagraph);
     }
 
     private PdfPCell createHeaderCell(String cellContent) {
-        Font darkBlue = new Font(Font.FontFamily.HELVETICA, 10, 0, BaseColor.WHITE);
-        PdfPCell cell = new PdfPCell(new Phrase(cellContent, darkBlue));
+        Font whiteText = new Font(Font.FontFamily.HELVETICA, 10, 0, BaseColor.WHITE);
+        PdfPCell cell = new PdfPCell(new Phrase(cellContent, whiteText));
         cell.setBackgroundColor(DARK_BLUE);
         cell.setBorderColor(DARK_BLUE);
+        cell.setHorizontalAlignment(1);
+        return cell;
+    }
+
+    private PdfPCell createBodyCell(String cellContent) {
+        Font blackText = new Font(Font.FontFamily.HELVETICA, 10);
+        PdfPCell cell = new PdfPCell(new Phrase(cellContent, blackText));
+        cell.setBackgroundColor(LIGHT_BLUE);
+        cell.setBorderColor(LIGHT_BLUE);
+        cell.setHorizontalAlignment(1);
         return cell;
     }
 }
