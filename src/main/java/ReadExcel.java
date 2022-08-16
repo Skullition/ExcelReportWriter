@@ -13,6 +13,7 @@ import org.jetbrains.annotations.NotNull;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.net.URL;
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -104,17 +105,30 @@ public class ReadExcel {
 
         addPdfHeader(document, cellValues.get(1), cellValues.get(2), cellValues.get(3), cellValues.get(cellValues.size() - 1), false);
 
-        PdfPTable table = new PdfPTable(8);
-        table.addCell(createHeaderCell("Nama Kursus"));
-        table.addCell(createHeaderCell("Harga Kursus"));
-        table.addCell(createHeaderCell("Jumlah Transaksi"));
-        table.addCell(createHeaderCell("Potongan Payment Gateway"));
-        table.addCell(createHeaderCell("Persentase"));
-        table.addCell(createHeaderCell("Pendapatan sebelum pajak"));
-        table.addCell(createHeaderCell("Persentase pajak"));
-        table.addCell(createHeaderCell("Pendapatan Akhir"));
+        PdfPTable headerTable = new PdfPTable(8);
+        headerTable.addCell(createHeaderCell("Nama Kursus"));
+        headerTable.addCell(createHeaderCell("Harga Kursus"));
+        headerTable.addCell(createHeaderCell("Jumlah Transaksi"));
+        headerTable.addCell(createHeaderCell("Potongan Payment Gateway"));
+        headerTable.addCell(createHeaderCell("Persentase"));
+        headerTable.addCell(createHeaderCell("Pendapatan sebelum pajak"));
+        headerTable.addCell(createHeaderCell("Persentase pajak"));
+        headerTable.addCell(createHeaderCell("Pendapatan Akhir"));
 
-        document.add(table);
+        document.add(headerTable);
+
+        PdfPTable bodyTable = new PdfPTable(8);
+        bodyTable.addCell(createBodyCell(cellValues.get(5)));
+        bodyTable.addCell(createBodyCell(formatStringToIdrCurrency(cellValues.get(6))));
+        bodyTable.addCell(createBodyCell(formatStringToIdrCurrency(cellValues.get(7))));
+        bodyTable.addCell(createBodyCell(formatStringToIdrCurrency(cellValues.get(8))));
+        bodyTable.addCell(createBodyCell(cellValues.get(11)));
+        bodyTable.addCell(createBodyCell(cellValues.get(12)));
+        bodyTable.addCell(createBodyCell(cellValues.get(13)));
+        bodyTable.addCell(createBodyCell(cellValues.get(cellValues.size() - 1)));
+
+        document.add(bodyTable);
+
         document.close();
     }
 
