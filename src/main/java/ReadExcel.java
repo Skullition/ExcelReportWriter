@@ -13,7 +13,6 @@ import org.jetbrains.annotations.NotNull;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.net.URL;
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -30,6 +29,17 @@ public class ReadExcel {
     public static final BaseColor DARK_BLUE = new BaseColor(68, 114, 196);
     public static final BaseColor LIGHT_BLUE = new BaseColor(221, 235, 247);
     public static final NumberFormat IDR_FORMATTER = NumberFormat.getInstance(new Locale("ind"));
+    public static Image GREATNUSA_IMAGE;
+
+    static {
+        try {
+            GREATNUSA_IMAGE = Image.getInstance(new URL(GREATNUSA_IMAGE_URL));
+        } catch (BadElementException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     public static void main(String[] args) {
         new ReadExcel().createPdf(args);
@@ -135,10 +145,9 @@ public class ReadExcel {
     private void addPdfHeader(@NotNull Document document, String to, String email, String period, String total, boolean isDoubleTable) throws DocumentException, IOException {
         Paragraph headerPhrase = new Paragraph("LAPORAN PENJUALAN KURSUS", new Font(Font.FontFamily.HELVETICA, 16));
         document.add(headerPhrase);
-        Image image = Image.getInstance(new URL(GREATNUSA_IMAGE_URL));
-        image.setAlignment(Image.ALIGN_RIGHT);
-        image.scalePercent(5f);
-        document.add(image);
+        GREATNUSA_IMAGE.setAlignment(Image.ALIGN_RIGHT);
+        GREATNUSA_IMAGE.scalePercent(5f);
+        document.add(GREATNUSA_IMAGE);
 
         Font font = new Font(Font.FontFamily.HELVETICA, 11);
         document.add(new Paragraph("Kepada  : " + to, font));
