@@ -2,6 +2,7 @@ import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.poi.ss.usermodel.Cell;
@@ -34,9 +35,7 @@ public class ReadExcel {
     static {
         try {
             GREATNUSA_IMAGE = Image.getInstance(new URL(GREATNUSA_IMAGE_URL));
-        } catch (BadElementException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+        } catch (BadElementException | IOException e) {
             e.printStackTrace();
         }
     }
@@ -94,16 +93,22 @@ public class ReadExcel {
     private void CreatePdfBasedOnReportType(@NotNull List<String> cellValues) throws DocumentException, IOException {
         String dataType = cellValues.get(0);
         System.out.println(cellValues);
-        if (dataType.equalsIgnoreCase("Retail")) {
-            createRetail(cellValues);
-        } else if (dataType.equalsIgnoreCase("B2B")) {
+        switch (dataType) {
+            case "Retail":
+                createRetail(cellValues);
+                break;
+            case "B2B":
 
-        } else if (dataType.equalsIgnoreCase("R&B")) {
+                break;
 
-        } else if (dataType.equalsIgnoreCase("Non BINUS")) {
+            case "R&B":
+                break;
 
-        } else {
-            throw new IllegalArgumentException();
+            case "Non BINUS":
+
+                break;
+            default:
+                LOGGER.log(Level.ERROR, dataType + "is not a supported type.");
         }
     }
 
@@ -142,7 +147,7 @@ public class ReadExcel {
         document.close();
     }
 
-    private void addPdfHeader(@NotNull Document document, String to, String email, String period, String total, boolean isDoubleTable) throws DocumentException, IOException {
+    private void addPdfHeader(@NotNull Document document, String to, String email, String period, String total, boolean isDoubleTable) throws DocumentException {
         Paragraph headerPhrase = new Paragraph("LAPORAN PENJUALAN KURSUS", new Font(Font.FontFamily.HELVETICA, 16));
         document.add(headerPhrase);
         GREATNUSA_IMAGE.setAlignment(Image.ALIGN_RIGHT);
