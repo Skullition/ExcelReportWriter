@@ -146,11 +146,12 @@ public class ReadExcel {
         double totalDouble = Double.parseDouble(cellValues.get(cellValues.size() - 1)) + Double.parseDouble(cellValuesExtra.get(cellValuesExtra.size() - 1));
         addPdfHeader(document, cellValues.get(1), cellValues.get(2), cellValues.get(3), String.valueOf(totalDouble));
 
-        PdfPTable headerTablePrimary = getPdfPTableHeaderRetail();
-        document.add(headerTablePrimary);
+        addRetailTable(document, cellValues);
+//        addSecondaryTableRNB(document, cellValuesExtra);
 
         document.close();
     }
+
 
     private void createRetail(@NotNull List<String> cellValues) throws DocumentException, IOException {
         // Create new Document
@@ -160,26 +161,13 @@ public class ReadExcel {
 
         addPdfHeader(document, cellValues.get(1), cellValues.get(2), cellValues.get(3), cellValues.get(cellValues.size() - 1));
 
-        PdfPTable headerTable = getPdfPTableHeaderRetail();
-        document.add(headerTable);
+        addRetailTable(document, cellValues);
 
-        PdfPTable bodyTable = new PdfPTable(8);
-        bodyTable.addCell(createBodyCell(cellValues.get(5)));
-        bodyTable.addCell(createBodyCell(formatStringToIdrCurrency(cellValues.get(6))));
-        bodyTable.addCell(createBodyCell(formatStringToIdrCurrency(cellValues.get(7))));
-        bodyTable.addCell(createBodyCell(formatStringToIdrCurrency(cellValues.get(8))));
-        bodyTable.addCell(createBodyCell(cellValues.get(11)));
-        bodyTable.addCell(createBodyCell(cellValues.get(12)));
-        bodyTable.addCell(createBodyCell(cellValues.get(13)));
-        bodyTable.addCell(createBodyCell(cellValues.get(cellValues.size() - 1)));
-
-        document.add(bodyTable);
 
         document.close();
     }
 
-    @NotNull
-    private PdfPTable getPdfPTableHeaderRetail() {
+    private void addRetailTable(@NotNull Document document, @NotNull List<String> cellValues) throws DocumentException {
         PdfPTable headerTable = new PdfPTable(8);
         headerTable.addCell(createHeaderCell("Nama Kursus"));
         headerTable.addCell(createHeaderCell("Harga Kursus"));
@@ -189,7 +177,36 @@ public class ReadExcel {
         headerTable.addCell(createHeaderCell("Pendapatan sebelum pajak"));
         headerTable.addCell(createHeaderCell("Persentase pajak"));
         headerTable.addCell(createHeaderCell("Pendapatan Akhir"));
-        return headerTable;
+
+        document.add(headerTable);
+
+        PdfPTable bodyTable = new PdfPTable(8);
+        bodyTable.addCell(createBodyCell(cellValues.get(4)));
+        bodyTable.addCell(createBodyCell(formatStringToIdrCurrency(cellValues.get(5))));
+        int transactionAmount = Double.valueOf(cellValues.get(6)).intValue();
+        bodyTable.addCell(createBodyCell(String.valueOf(transactionAmount)));
+        bodyTable.addCell(createBodyCell(formatStringToIdrCurrency(cellValues.get(7))));
+        bodyTable.addCell(createBodyCell(cellValues.get(10)));
+        bodyTable.addCell(createBodyCell(formatStringToIdrCurrency(cellValues.get(11))));
+        bodyTable.addCell(createBodyCell(cellValues.get(12)));
+        bodyTable.addCell(createBodyCell(formatStringToIdrCurrency(cellValues.get(14))));
+
+        document.add(bodyTable);
+    }
+
+    private void addSecondaryTableRNB(Document document, List<String> cellValues) throws DocumentException {
+        PdfPTable headerTable = new PdfPTable(8);
+        headerTable.addCell(createHeaderCell("Nama Kursus"));
+        headerTable.addCell(createHeaderCell("Harga Kursus"));
+        headerTable.addCell(createHeaderCell("Jumlah Transaksi"));
+        headerTable.addCell(createHeaderCell("Biaya Administrasi"));
+        headerTable.addCell(createHeaderCell("Persentase"));
+        headerTable.addCell(createHeaderCell("Pendapatan sebelum pajak"));
+        headerTable.addCell(createHeaderCell("Persentase pajak"));
+        headerTable.addCell(createHeaderCell("Pendapatan Akhir"));
+
+        document.add(headerTable);
+
     }
 
     private void addPdfHeader(@NotNull Document document, String to, String email, String period, String total) throws DocumentException {
