@@ -12,6 +12,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
@@ -31,6 +32,10 @@ public class ReadExcel {
     public static final BaseColor LIGHT_BLUE = new BaseColor(221, 235, 247);
     public static final NumberFormat IDR_FORMATTER = NumberFormat.getInstance(new Locale("ind"));
     public static Image GREATNUSA_IMAGE;
+    /**
+     * boolean value of whether {@link #createRNB(List, List) createRNB} should be called or not
+     */
+    public static boolean RNB_FLAG = true;
 
     static {
         try {
@@ -67,30 +72,43 @@ public class ReadExcel {
                     continue;
                 }
                 List<String> cellValues = new ArrayList<>();
+                List<String> cellValuesExtra = new ArrayList<>();
                 Iterator<Cell> cellIterator = row.cellIterator();
                 while (cellIterator.hasNext()) {
                     Cell cell = cellIterator.next();
-                    String cellContent;
-                    switch (cell.getCellType()) {
-                        case NUMERIC:
-                            cellContent = String.valueOf(cell.getNumericCellValue());
-                            break;
-                        case STRING:
-                            cellContent = cell.getStringCellValue();
-                            break;
-                        default:
-                            throw new IllegalStateException("Unexpected value: " + cell.getCellType());
-                    }
+                    String cellContent = getValueFromCell(cell);
                     cellValues.add(cellContent);
+
+                    if (row.getCell(row.getFirstCellNum()).getStringCellValue().equals("R&B")) {
+                        Cell extraCell = sheet.getRow(cell.getRowIndex() + 1).getCell(cell.getColumnIndex());
+                        String extraCellContent = getValueFromCell(extraCell);
+                        cellValuesExtra.add(extraCellContent);
+                    }
+
                 }
-                CreatePdfBasedOnReportType(cellValues);
+                CreatePdfBasedOnReportType(cellValues, cellValuesExtra);
             }
         } catch (IOException | DocumentException e) {
             e.printStackTrace();
         }
     }
 
-    private void CreatePdfBasedOnReportType(@NotNull List<String> cellValues) throws DocumentException, IOException {
+    private String getValueFromCell(Cell cell) {
+        String cellContent;
+        switch (cell.getCellType()) {
+            case NUMERIC:
+                cellContent = String.valueOf(cell.getNumericCellValue());
+                break;
+            case STRING:
+                cellContent = cell.getStringCellValue();
+                break;
+            default:
+                throw new IllegalStateException("Unexpected value: " + cell.getCellType());
+        }
+        return cellContent;
+    }
+
+    private void CreatePdfBasedOnReportType(@NotNull List<String> cellValues, @NotNull List<String> cellValuesExtra) throws DocumentException, IOException {
         String dataType = cellValues.get(0);
         System.out.println(cellValues);
         switch (dataType) {
@@ -102,6 +120,7 @@ public class ReadExcel {
                 break;
 
             case "R&B":
+                    createRNB(cellValues, cellValuesExtra);
                 break;
 
             case "Non BINUS":
@@ -112,24 +131,36 @@ public class ReadExcel {
         }
     }
 
+    private void createRNB(List<String> cellValues, List<String> cellValuesExtra) throws DocumentException, FileNotFoundException {
+        // check whether this method should continue
+        if (!RNB_FLAG) {
+            RNB_FLAG = true;
+            return;
+        }
+        RNB_FLAG = false;
+        // Create new Document
+        Document document = new Document(PageSize.A4.rotate());
+        PdfWriter.getInstance(document, new FileOutputStream(cellValues.get(1) + ".pdf"));
+        document.open();
+
+        double totalDouble = Double.parseDouble(cellValues.get(cellValues.size() - 1)) + Double.parseDouble(cellValuesExtra.get(cellValuesExtra.size() - 1));
+        addPdfHeader(document, cellValues.get(1), cellValues.get(2), cellValues.get(3), String.valueOf(totalDouble));
+
+        PdfPTable headerTablePrimary = getPdfPTableHeaderRetail();
+        document.add(headerTablePrimary);
+
+        document.close();
+    }
+
     private void createRetail(@NotNull List<String> cellValues) throws DocumentException, IOException {
         // Create new Document
         Document document = new Document(PageSize.A4.rotate());
         PdfWriter.getInstance(document, new FileOutputStream(cellValues.get(1) + ".pdf"));
         document.open();
 
-        addPdfHeader(document, cellValues.get(1), cellValues.get(2), cellValues.get(3), cellValues.get(cellValues.size() - 1), false);
+        addPdfHeader(document, cellValues.get(1), cellValues.get(2), cellValues.get(3), cellValues.get(cellValues.size() - 1));
 
-        PdfPTable headerTable = new PdfPTable(8);
-        headerTable.addCell(createHeaderCell("Nama Kursus"));
-        headerTable.addCell(createHeaderCell("Harga Kursus"));
-        headerTable.addCell(createHeaderCell("Jumlah Transaksi"));
-        headerTable.addCell(createHeaderCell("Potongan Payment Gateway"));
-        headerTable.addCell(createHeaderCell("Persentase"));
-        headerTable.addCell(createHeaderCell("Pendapatan sebelum pajak"));
-        headerTable.addCell(createHeaderCell("Persentase pajak"));
-        headerTable.addCell(createHeaderCell("Pendapatan Akhir"));
-
+        PdfPTable headerTable = getPdfPTableHeaderRetail();
         document.add(headerTable);
 
         PdfPTable bodyTable = new PdfPTable(8);
@@ -147,7 +178,21 @@ public class ReadExcel {
         document.close();
     }
 
-    private void addPdfHeader(@NotNull Document document, String to, String email, String period, String total, boolean isDoubleTable) throws DocumentException {
+    @NotNull
+    private PdfPTable getPdfPTableHeaderRetail() {
+        PdfPTable headerTable = new PdfPTable(8);
+        headerTable.addCell(createHeaderCell("Nama Kursus"));
+        headerTable.addCell(createHeaderCell("Harga Kursus"));
+        headerTable.addCell(createHeaderCell("Jumlah Transaksi"));
+        headerTable.addCell(createHeaderCell("Potongan Payment Gateway"));
+        headerTable.addCell(createHeaderCell("Persentase"));
+        headerTable.addCell(createHeaderCell("Pendapatan sebelum pajak"));
+        headerTable.addCell(createHeaderCell("Persentase pajak"));
+        headerTable.addCell(createHeaderCell("Pendapatan Akhir"));
+        return headerTable;
+    }
+
+    private void addPdfHeader(@NotNull Document document, String to, String email, String period, String total) throws DocumentException {
         Paragraph headerPhrase = new Paragraph("LAPORAN PENJUALAN KURSUS", new Font(Font.FontFamily.HELVETICA, 16));
         document.add(headerPhrase);
         GREATNUSA_IMAGE.setAlignment(Image.ALIGN_RIGHT);
