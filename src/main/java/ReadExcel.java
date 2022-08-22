@@ -147,7 +147,7 @@ public class ReadExcel {
         addPdfHeader(document, cellValues.get(1), cellValues.get(2), cellValues.get(3), String.valueOf(totalDouble));
 
         addRetailTable(document, cellValues);
-//        addSecondaryTableRNB(document, cellValuesExtra);
+        addSecondaryTableRNB(document, cellValuesExtra);
 
         document.close();
     }
@@ -178,6 +178,7 @@ public class ReadExcel {
         headerTable.addCell(createHeaderCell("Persentase pajak"));
         headerTable.addCell(createHeaderCell("Pendapatan Akhir"));
 
+
         document.add(headerTable);
 
         PdfPTable bodyTable = new PdfPTable(8);
@@ -185,11 +186,13 @@ public class ReadExcel {
         bodyTable.addCell(createBodyCell(formatStringToIdrCurrency(cellValues.get(5))));
         int transactionAmount = Double.valueOf(cellValues.get(6)).intValue();
         bodyTable.addCell(createBodyCell(String.valueOf(transactionAmount)));
-        bodyTable.addCell(createBodyCell(formatStringToIdrCurrency(cellValues.get(7))));
+        bodyTable.addCell(createBodyCell(formatStringToIdrCurrency(cellValues.get(8))));
         bodyTable.addCell(createBodyCell(cellValues.get(10)));
         bodyTable.addCell(createBodyCell(formatStringToIdrCurrency(cellValues.get(11))));
         bodyTable.addCell(createBodyCell(cellValues.get(12)));
         bodyTable.addCell(createBodyCell(formatStringToIdrCurrency(cellValues.get(14))));
+
+        bodyTable.setSpacingAfter(20f);
 
         document.add(bodyTable);
     }
@@ -207,6 +210,18 @@ public class ReadExcel {
 
         document.add(headerTable);
 
+        PdfPTable bodyTable = new PdfPTable(8);
+        bodyTable.addCell(createBodyCell(cellValues.get(4)));
+        bodyTable.addCell(createBodyCell(formatStringToIdrCurrency(cellValues.get(5))));
+        int transactionAmount = Double.valueOf(cellValues.get(6)).intValue();
+        bodyTable.addCell(createBodyCell(String.valueOf(transactionAmount)));
+        bodyTable.addCell(createBodyCell(formatStringToIdrCurrency(cellValues.get(9))));
+        bodyTable.addCell(createBodyCell(cellValues.get(10)));
+        bodyTable.addCell(createBodyCell(formatStringToIdrCurrency(cellValues.get(11))));
+        bodyTable.addCell(createBodyCell(cellValues.get(12)));
+        bodyTable.addCell(createBodyCell(formatStringToIdrCurrency(cellValues.get(14))));
+
+        document.add(bodyTable);
     }
 
     private void addPdfHeader(@NotNull Document document, String to, String email, String period, String total) throws DocumentException {
