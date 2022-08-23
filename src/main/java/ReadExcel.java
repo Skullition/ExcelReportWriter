@@ -116,7 +116,7 @@ public class ReadExcel {
                 createRetail(cellValues);
                 break;
             case "B2B":
-
+                createBTB(cellValues);
                 break;
 
             case "R&B":
@@ -129,6 +129,19 @@ public class ReadExcel {
             default:
                 LOGGER.log(Level.ERROR, dataType + "is not a supported type.");
         }
+    }
+
+    private void createBTB(List<String> cellValues) throws FileNotFoundException, DocumentException {
+        // Create new Document
+        Document document = new Document(PageSize.A4.rotate());
+        PdfWriter.getInstance(document, new FileOutputStream(cellValues.get(1) + ".pdf"));
+        document.open();
+
+        addPdfHeader(document, cellValues.get(1), cellValues.get(2), cellValues.get(3), cellValues.get(cellValues.size() - 1));
+
+        addSecondaryTableRNB(document, cellValues);
+
+        document.close();
     }
 
     private void createRNB(List<String> cellValues, List<String> cellValuesExtra) throws DocumentException, FileNotFoundException {
