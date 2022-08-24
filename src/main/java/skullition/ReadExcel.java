@@ -1,10 +1,9 @@
+package skullition;
+
 import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -23,7 +22,6 @@ import java.util.List;
 import java.util.Locale;
 
 public class ReadExcel {
-    public static final Logger LOGGER = LogManager.getLogger();
     /**
      * String of URL location with GreatNusa image
      */
@@ -127,7 +125,7 @@ public class ReadExcel {
                 createBTBOrNonBinus(cellValues, true);
                 break;
             default:
-                LOGGER.log(Level.ERROR, dataType + "is not a supported type.");
+                System.out.println(dataType + "is not a supported type.");
         }
     }
 

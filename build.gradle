@@ -15,8 +15,6 @@ dependencies {
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.0'
     implementation group: 'org.apache.poi', name: 'poi', version: '5.2.2'
     implementation group: 'org.apache.poi', name: 'poi-ooxml', version: '5.2.2'
-    implementation 'org.apache.logging.log4j:log4j-api:2.18.0'
-    implementation 'org.apache.logging.log4j:log4j-core:2.18.0'
     implementation group: 'com.itextpdf', name: 'itextpdf', version: '5.5.13.3'
 
 }
@@ -26,6 +24,7 @@ test {
 }
 
 tasks.register('uberJar', Jar) {
+    manifest.from jar.manifest
     archiveClassifier = 'uber'
 
     from sourceSets.main.output
@@ -33,5 +32,12 @@ tasks.register('uberJar', Jar) {
     dependsOn configurations.runtimeClasspath
     from {
         configurations.runtimeClasspath.findAll { it.name.endsWith('jar') }.collect { zipTree(it) }
+    }
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
+}
+
+jar {
+    manifest {
+        attributes('Main-Class': 'skullition.ReadExcel')
     }
 }
