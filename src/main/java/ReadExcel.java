@@ -116,22 +116,22 @@ public class ReadExcel {
                 createRetail(cellValues);
                 break;
             case "B2B":
-                createBTB(cellValues);
+                createBTBOrNonBinus(cellValues, false);
                 break;
 
             case "R&B":
-                    createRNB(cellValues, cellValuesExtra);
+                createRNB(cellValues, cellValuesExtra);
                 break;
 
             case "Non BINUS":
-
+                createBTBOrNonBinus(cellValues, true);
                 break;
             default:
                 LOGGER.log(Level.ERROR, dataType + "is not a supported type.");
         }
     }
 
-    private void createBTB(List<String> cellValues) throws FileNotFoundException, DocumentException {
+    private void createBTBOrNonBinus(List<String> cellValues, boolean isNonBinus) throws FileNotFoundException, DocumentException {
         // Create new Document
         Document document = new Document(PageSize.A4.rotate());
         PdfWriter.getInstance(document, new FileOutputStream(cellValues.get(1) + ".pdf"));
@@ -139,10 +139,11 @@ public class ReadExcel {
 
         addPdfHeader(document, cellValues.get(1), cellValues.get(2), cellValues.get(3), cellValues.get(cellValues.size() - 1));
 
-        addSecondaryTableRNB(document, cellValues);
+        addSecondaryTableRNB(document, cellValues, isNonBinus);
 
         document.close();
     }
+
 
     private void createRNB(List<String> cellValues, List<String> cellValuesExtra) throws DocumentException, FileNotFoundException {
         // check whether this method should continue
@@ -160,7 +161,7 @@ public class ReadExcel {
         addPdfHeader(document, cellValues.get(1), cellValues.get(2), cellValues.get(3), String.valueOf(totalDouble));
 
         addRetailTable(document, cellValues);
-        addSecondaryTableRNB(document, cellValuesExtra);
+        addSecondaryTableRNB(document, cellValuesExtra, false);
 
         document.close();
     }
@@ -210,12 +211,16 @@ public class ReadExcel {
         document.add(bodyTable);
     }
 
-    private void addSecondaryTableRNB(Document document, List<String> cellValues) throws DocumentException {
+    private void addSecondaryTableRNB(Document document, List<String> cellValues, boolean isNonBinus) throws DocumentException {
         PdfPTable headerTable = new PdfPTable(8);
         headerTable.addCell(createHeaderCell("Nama Kursus"));
         headerTable.addCell(createHeaderCell("Harga Kursus"));
         headerTable.addCell(createHeaderCell("Jumlah Transaksi"));
-        headerTable.addCell(createHeaderCell("Biaya Administrasi"));
+        if (isNonBinus) {
+            headerTable.addCell(createHeaderCell("Total Biaya Service"));
+        } else {
+            headerTable.addCell(createHeaderCell("Biaya Administrasi"));
+        }
         headerTable.addCell(createHeaderCell("Persentase"));
         headerTable.addCell(createHeaderCell("Pendapatan sebelum pajak"));
         headerTable.addCell(createHeaderCell("Persentase pajak"));
