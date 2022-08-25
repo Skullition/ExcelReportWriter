@@ -185,11 +185,28 @@ public class ReadExcel {
         headerTable.addCell(createHeaderCell("Harga Kursus"));
         headerTable.addCell(createHeaderCell("Jumlah Transaksi"));
         headerTable.addCell(createHeaderCell("Potongan Payment Gateway"));
+
+        PdfPTable bodyTable = createHeaderTable(document, cellValues, headerTable);
+
+        bodyTable.addCell(createBodyCell(formatStringToIdrCurrency(cellValues.get(8))));
+        bodyTable.addCell(createBodyCell(cellValues.get(10)));
+        bodyTable.addCell(createBodyCell(formatStringToIdrCurrency(cellValues.get(11))));
+        bodyTable.addCell(createBodyCell(cellValues.get(12)));
+        bodyTable.addCell(createBodyCell(formatStringToIdrCurrency(cellValues.get(14))));
+        bodyTable.setWidthPercentage(100f);
+
+        bodyTable.setSpacingAfter(20f);
+
+        document.add(bodyTable);
+    }
+
+    private PdfPTable createHeaderTable(@NotNull Document document, @NotNull List<String> cellValues, PdfPTable headerTable) throws DocumentException {
         headerTable.addCell(createHeaderCell("Persentase"));
         headerTable.addCell(createHeaderCell("Pendapatan sebelum pajak"));
         headerTable.addCell(createHeaderCell("Persentase pajak"));
         headerTable.addCell(createHeaderCell("Pendapatan Akhir"));
 
+        headerTable.setWidthPercentage(100f);
 
         document.add(headerTable);
 
@@ -198,15 +215,7 @@ public class ReadExcel {
         bodyTable.addCell(createBodyCell(formatStringToIdrCurrency(cellValues.get(5))));
         int transactionAmount = Double.valueOf(cellValues.get(6)).intValue();
         bodyTable.addCell(createBodyCell(String.valueOf(transactionAmount)));
-        bodyTable.addCell(createBodyCell(formatStringToIdrCurrency(cellValues.get(8))));
-        bodyTable.addCell(createBodyCell(cellValues.get(10)));
-        bodyTable.addCell(createBodyCell(formatStringToIdrCurrency(cellValues.get(11))));
-        bodyTable.addCell(createBodyCell(cellValues.get(12)));
-        bodyTable.addCell(createBodyCell(formatStringToIdrCurrency(cellValues.get(14))));
-
-        bodyTable.setSpacingAfter(20f);
-
-        document.add(bodyTable);
+        return bodyTable;
     }
 
     private void addSecondaryTableRNB(Document document, List<String> cellValues, boolean isNonBinus) throws DocumentException {
@@ -219,23 +228,13 @@ public class ReadExcel {
         } else {
             headerTable.addCell(createHeaderCell("Biaya Administrasi"));
         }
-        headerTable.addCell(createHeaderCell("Persentase"));
-        headerTable.addCell(createHeaderCell("Pendapatan sebelum pajak"));
-        headerTable.addCell(createHeaderCell("Persentase pajak"));
-        headerTable.addCell(createHeaderCell("Pendapatan Akhir"));
-
-        document.add(headerTable);
-
-        PdfPTable bodyTable = new PdfPTable(8);
-        bodyTable.addCell(createBodyCell(cellValues.get(4)));
-        bodyTable.addCell(createBodyCell(formatStringToIdrCurrency(cellValues.get(5))));
-        int transactionAmount = Double.valueOf(cellValues.get(6)).intValue();
-        bodyTable.addCell(createBodyCell(String.valueOf(transactionAmount)));
+        PdfPTable bodyTable = createHeaderTable(document, cellValues, headerTable);
         bodyTable.addCell(createBodyCell(formatStringToIdrCurrency(cellValues.get(9))));
         bodyTable.addCell(createBodyCell(cellValues.get(10)));
         bodyTable.addCell(createBodyCell(formatStringToIdrCurrency(cellValues.get(11))));
         bodyTable.addCell(createBodyCell(cellValues.get(12)));
         bodyTable.addCell(createBodyCell(formatStringToIdrCurrency(cellValues.get(14))));
+        bodyTable.setWidthPercentage(100f);
 
         document.add(bodyTable);
     }
