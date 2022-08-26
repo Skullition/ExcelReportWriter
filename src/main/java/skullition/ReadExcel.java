@@ -137,7 +137,7 @@ public class ReadExcel {
 
         addPdfHeader(document, cellValues.get(1), cellValues.get(2), cellValues.get(3), cellValues.get(cellValues.size() - 1));
 
-        addSecondaryTableRNB(document, cellValues, isNonBinus);
+        addSecondaryTable(document, cellValues, isNonBinus);
 
         document.close();
     }
@@ -159,7 +159,7 @@ public class ReadExcel {
         addPdfHeader(document, cellValues.get(1), cellValues.get(2), cellValues.get(3), String.valueOf(totalDouble));
 
         addRetailTable(document, cellValues);
-        addSecondaryTableRNB(document, cellValuesExtra, false);
+        addSecondaryTable(document, cellValuesExtra, false);
 
         document.close();
     }
@@ -180,6 +180,8 @@ public class ReadExcel {
     }
 
     private void addRetailTable(@NotNull Document document, @NotNull List<String> cellValues) throws DocumentException {
+        Font fontHelvetica = new Font(Font.FontFamily.HELVETICA);
+        document.add(new Paragraph("Rincian Transaksi Retail", fontHelvetica));
         PdfPTable headerTable = new PdfPTable(8);
         headerTable.addCell(createHeaderCell("Nama Kursus"));
         headerTable.addCell(createHeaderCell("Harga Kursus"));
@@ -218,7 +220,13 @@ public class ReadExcel {
         return bodyTable;
     }
 
-    private void addSecondaryTableRNB(Document document, List<String> cellValues, boolean isNonBinus) throws DocumentException {
+    private void addSecondaryTable(Document document, List<String> cellValues, boolean isNonBinus) throws DocumentException {
+        Font fontHelvetica = new Font(Font.FontFamily.HELVETICA);
+        if (isNonBinus) {
+            document.add(new Paragraph("Rincian Transaksi", fontHelvetica));
+        } else {
+            document.add(new Paragraph("Rincian Transaksi B2B"));
+        }
         PdfPTable headerTable = new PdfPTable(8);
         headerTable.addCell(createHeaderCell("Nama Kursus"));
         headerTable.addCell(createHeaderCell("Harga Kursus"));
