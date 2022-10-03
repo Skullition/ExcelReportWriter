@@ -100,6 +100,18 @@ public class ReadExcel {
             case STRING:
                 cellContent = cell.getStringCellValue();
                 break;
+            case FORMULA:
+                switch (cell.getCachedFormulaResultType()) {
+                    case NUMERIC:
+                        cellContent = String.valueOf(cell.getNumericCellValue());
+                        break;
+                    case STRING:
+                        cellContent = cell.getStringCellValue();
+                        break;
+                    default:
+                        throw new IllegalStateException("Unexpected value: " + cell.getCellType());
+                }
+                break;
             default:
                 throw new IllegalStateException("Unexpected value: " + cell.getCellType());
         }
@@ -108,7 +120,7 @@ public class ReadExcel {
 
     private void CreatePdfBasedOnReportType(@NotNull List<String> cellValues, @NotNull List<String> cellValuesExtra) throws DocumentException, IOException {
         String dataType = cellValues.get(0);
-        System.out.println(cellValues);
+//        System.out.println(cellValues);
         switch (dataType) {
             case "Retail":
                 createRetail(cellValues);
@@ -131,15 +143,21 @@ public class ReadExcel {
 
     private void createBTBOrNonBinus(List<String> cellValues, boolean isNonBinus) throws FileNotFoundException, DocumentException {
         // Create new Document
+
+        Document document = createDocument(cellValues);
+
+        addSecondaryTable(document, cellValues, isNonBinus);
+
+        document.close();
+    }
+
+    private Document createDocument(List<String> cellValues) throws DocumentException, FileNotFoundException {
         Document document = new Document(PageSize.A4.rotate());
         PdfWriter.getInstance(document, new FileOutputStream(cellValues.get(1) + ".pdf"));
         document.open();
 
         addPdfHeader(document, cellValues.get(1), cellValues.get(2), cellValues.get(3), cellValues.get(cellValues.size() - 1));
-
-        addSecondaryTable(document, cellValues, isNonBinus);
-
-        document.close();
+        return document;
     }
 
 
@@ -167,11 +185,7 @@ public class ReadExcel {
 
     private void createRetail(@NotNull List<String> cellValues) throws DocumentException, IOException {
         // Create new Document
-        Document document = new Document(PageSize.A4.rotate());
-        PdfWriter.getInstance(document, new FileOutputStream(cellValues.get(1) + ".pdf"));
-        document.open();
-
-        addPdfHeader(document, cellValues.get(1), cellValues.get(2), cellValues.get(3), cellValues.get(cellValues.size() - 1));
+        Document document = createDocument(cellValues);
 
         addRetailTable(document, cellValues);
 
