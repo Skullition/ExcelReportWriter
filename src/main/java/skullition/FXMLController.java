@@ -1,8 +1,9 @@
 package skullition;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Label;
+import javafx.scene.control.Button;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -10,12 +11,18 @@ import java.util.ResourceBundle;
 public class FXMLController implements Initializable {
 
     @FXML
-    private Label label;
+    private Button loadFileButton;
+    @FXML
+    private Button makePdfButton;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        String javaVersion = System.getProperty("java.version");
-        String javafxVersion = System.getProperty("javafx.version");
-        label.setText("Hello, JavaFX " + javafxVersion + "\nRunning on Java " + javaVersion + ".");
+        loadFileButton = new Button();
+        makePdfButton = new Button();
+    }
+
+    @FXML
+    private void loadFile(ActionEvent event) {
+        System.out.println("lsdflsdl");
     }
 }
