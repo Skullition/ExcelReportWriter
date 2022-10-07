@@ -1,4 +1,4 @@
-package skullition;
+package skullition.Logic;
 
 import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.PdfPCell;
