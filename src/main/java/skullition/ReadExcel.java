@@ -1,14 +1,9 @@
-package skullition.Logic;
+package skullition;
 
 import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
-import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.stage.Stage;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -26,7 +21,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
-public class ReadExcel extends Application {
+public class ReadExcel {
     /**
      * String of URL location with GreatNusa image
      */
@@ -48,22 +43,6 @@ public class ReadExcel extends Application {
         }
     }
 
-    public static void main(String[] args) {
-        launch(args);
-//        new ReadExcel().createPdf(args);
-    }
-
-    @Override
-    public void start(Stage primaryStage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("scene.fxml"));
-
-        Scene scene = new Scene(root);
-        scene.getStylesheets().add(getClass().getResource("styles.css").toExternalForm());
-
-        primaryStage.setTitle("Excel to PDF");
-        primaryStage.setScene(scene);
-        primaryStage.show();
-    }
 
     public static String formatStringToIdrCurrency(String money) {
         String formatted = IDR_FORMATTER.format(Double.valueOf(money));

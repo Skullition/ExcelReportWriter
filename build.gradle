@@ -4,7 +4,7 @@ plugins {
 }
 
 group 'org.skullition.excelreader'
-version '1.0'
+version '2.0'
 
 repositories {
     mavenCentral()
@@ -15,7 +15,7 @@ javafx {
     modules = [ 'javafx.controls', 'javafx.fxml' ]
 }
 
-mainClassName = 'skullition.ReadExcel'
+mainClassName = 'skullition.ReadExcelApp'
 
 dependencies {
     implementation 'org.jetbrains:annotations:23.0.0'

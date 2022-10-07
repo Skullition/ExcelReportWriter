@@ -1,4 +1,4 @@
-package skullition.UI;
+package skullition;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
