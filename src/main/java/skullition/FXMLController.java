@@ -4,6 +4,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Window;
@@ -20,11 +21,12 @@ public class FXMLController implements Initializable {
     private Button loadFileButton;
     @FXML
     private Button makePdfButton;
+    @FXML
+    private Label fileNameLabel;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        loadFileButton = new Button();
-        makePdfButton = new Button();
+        makePdfButton.setDisable(true);
     }
 
     @FXML
@@ -33,5 +35,10 @@ public class FXMLController implements Initializable {
         Window window = gridPane.getScene().getWindow();
         File selectedFile = fileChooser.showOpenDialog(window);
 
+
+        fileNameLabel.setText(selectedFile.getName());
+        if (selectedFile.getName().endsWith("xlsx")) {
+            makePdfButton.setDisable(false);
+        }
     }
 }
