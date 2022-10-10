@@ -4,16 +4,14 @@ import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.net.URL;
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -25,7 +23,7 @@ public class ReadExcel {
     /**
      * String of URL location with GreatNusa image
      */
-    public static final String GREATNUSA_IMAGE_URL = "https://greatnusa.com/pluginfile.php/1/theme_edumy/headerlogo2/1658542671/Great%20Nusa%20Logo-05_transparen_R.jpg";
+    public static final String GREATNUSA_IMAGE_URL = "https://southeastasia1-mediap.svc.ms/transform/thumbnail?provider=spo&inputFormat=jpg&cs=fFNQTw&docid=https%3A%2F%2Fbinusianorg-my.sharepoint.com%3A443%2F_api%2Fv2.0%2Fdrives%2Fb!6qxbfz9xNUmXY5vO2gcYC60gytO89V1BrPOaCkG5Rk7twgYTmOciQoX9h41eDF5y%2Fitems%2F013J7XMZZNGMCB3LSKMRCZCH43CX24OFRT%3Fversion%3DPublished&access_token=eyJ0eXAiOiJKV1QiLCJhbGciOiJub25lIn0.eyJhdWQiOiIwMDAwMDAwMy0wMDAwLTBmZjEtY2UwMC0wMDAwMDAwMDAwMDAvYmludXNpYW5vcmctbXkuc2hhcmVwb2ludC5jb21AMzQ4NWI5NjMtODJiYS00YTZmLTgxMGYtYjVjYzIyNmZmODk4IiwiaXNzIjoiMDAwMDAwMDMtMDAwMC0wZmYxLWNlMDAtMDAwMDAwMDAwMDAwIiwibmJmIjoiMTY2NTM5MjQwMCIsImV4cCI6IjE2NjU0MTQwMDAiLCJlbmRwb2ludHVybCI6IlloTkFBN1dTbDhQOXE1a1owLy9KS0V3eHR3ZkNINnpnbW9lRkxsMURETFE9IiwiZW5kcG9pbnR1cmxMZW5ndGgiOiIxMjEiLCJpc2xvb3BiYWNrIjoiVHJ1ZSIsInZlciI6Imhhc2hlZHByb29mdG9rZW4iLCJzaXRlaWQiOiJOMlkxWW1GalpXRXROekV6WmkwME9UTTFMVGszTmpNdE9XSmpaV1JoTURjeE9EQmkiLCJuYW1laWQiOiIwIy5mfG1lbWJlcnNoaXB8bmF0aGFuaWVsLnB1dHJhMDAxQGJpbnVzLmFjLmlkIiwibmlpIjoibWljcm9zb2Z0LnNoYXJlcG9pbnQiLCJpc3VzZXIiOiJ0cnVlIiwiY2FjaGVrZXkiOiIwaC5mfG1lbWJlcnNoaXB8MTAwMzIwMDE0NzE0MWJiNUBsaXZlLmNvbSIsInNpZCI6ImE3ZWFhNmJkLTQ4ZDctNDE4NC05MDNmLWQ2MGYzODdiNGY1NCIsInR0IjoiMCIsInVzZVBlcnNpc3RlbnRDb29raWUiOiIyIiwiaXBhZGRyIjoiMTgwLjI1Mi45My4yMTUifQ.M1NYREtjQXVDRzV5RFZUYzJIUTI0SlpySEsySitsbUc2KzlvOCtNQXV0bz0&cTag=%22c%3A%7B1D04332D-4AAE-4564-911F-9B15F5C71633%7D%2C1%22&encodeFailures=1&width=1920&height=916&srcWidth=&srcHeight=";
     public static final BaseColor DARK_BLUE = new BaseColor(68, 114, 196);
     public static final BaseColor LIGHT_BLUE = new BaseColor(221, 235, 247);
     public static final NumberFormat IDR_FORMATTER = NumberFormat.getInstance(new Locale("ind"));
@@ -52,12 +50,12 @@ public class ReadExcel {
     /**
      * Constructs a PDF file based on data from input
      *
-     * @param args the Microsoft Excel document to be read
+     * @param file the Microsoft Excel document to be read
      */
-    private void createPdf(String @NotNull [] args) {
+    public void createPdf(File file) {
         try {
             // Read XSSFWorkbook
-            XSSFWorkbook workbook = new XSSFWorkbook(new FileInputStream(args[0]));
+            XSSFWorkbook workbook = new XSSFWorkbook(file);
             XSSFSheet sheet = workbook.getSheetAt(0);
 
 
@@ -83,7 +81,7 @@ public class ReadExcel {
                 }
                 CreatePdfBasedOnReportType(cellValues, cellValuesExtra);
             }
-        } catch (IOException | DocumentException e) {
+        } catch (IOException | DocumentException | InvalidFormatException e) {
             e.printStackTrace();
         }
     }
