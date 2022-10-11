@@ -15,11 +15,6 @@
     </rowConstraints>
     <Button fx:id="loadFileButton" onAction="#loadFile" text="Load Excel File" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
     <Button fx:id="makePdfButton" onAction="#makePdf" text="Make PDF" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
-    <TableView fx:id="tableView" prefHeight="200.0" prefWidth="200.0">
-      <columns>
-          <TableColumn prefWidth="75.0" text="C1" />
-          <TableColumn prefWidth="75.0" text="C2" />
-      </columns>
-    </TableView>
+    <TableView fx:id="tableView" prefHeight="200.0" prefWidth="200.0" />
     <Label fx:id="fileNameLabel" alignment="CENTER" text="No File Selected" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
 </GridPane>
