@@ -148,7 +148,7 @@ public class ReadExcel {
 
     private Document createDocument(List<String> cellValues) throws DocumentException, FileNotFoundException {
         Document document = new Document(PageSize.A4.rotate());
-        PdfWriter.getInstance(document, new FileOutputStream(cellValues.get(1) + ".pdf"));
+        PdfWriter.getInstance(document, new FileOutputStream(cellValues.get(1) + cellValues.get(3) + ".pdf"));
         document.open();
 
         addPdfHeader(document, cellValues.get(1), cellValues.get(2), cellValues.get(3), cellValues.get(cellValues.size() - 1));
