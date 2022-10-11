@@ -86,7 +86,7 @@ public class ReadExcel {
         }
     }
 
-    private String getValueFromCell(Cell cell) {
+    public static String getValueFromCell(Cell cell) {
         String cellContent;
         switch (cell.getCellType()) {
             case NUMERIC:
