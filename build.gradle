@@ -1,6 +1,7 @@
 plugins {
     id 'application'
     id 'org.openjfx.javafxplugin' version '0.0.13'
+    id 'org.beryx.runtime' version '1.12.7'
 }
 
 group 'org.skullition.excelreader'
@@ -12,10 +13,10 @@ repositories {
 
 javafx {
     version = "11"
-    modules = [ 'javafx.controls', 'javafx.fxml' ]
+    modules = ['javafx.controls', 'javafx.fxml']
 }
 
-mainClassName = 'skullition.ReadExcelApp'
+mainClassName = 'skullition.ReadExcel'
 
 dependencies {
     implementation 'org.jetbrains:annotations:23.0.0'
@@ -31,6 +32,22 @@ dependencies {
 
 test {
     useJUnitPlatform()
+}
+runtime {
+    options = ['--strip-debug', '--compress', '2', '--no-header-files', '--no-man-pages']
+    modules = ['java.naming', 'java.xml', 'jdk.crypto.ec',
+               'java.desktop',
+               'java.xml',
+               'jdk.unsupported',
+               'java.scripting',
+               'java.security.jgss',
+               'java.xml.crypto',
+               'java.logging',
+               'java.rmi',
+               'java.sql',
+               'java.naming',
+               'java.compiler',
+               'java.management']
 }
 
 tasks.register('uberJar', Jar) {

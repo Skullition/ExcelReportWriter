@@ -41,6 +41,10 @@ public class ReadExcel {
         }
     }
 
+    public static void main(String[] args) {
+        ReadExcelApp.main(args);
+    }
+
 
     public static String formatStringToIdrCurrency(String money) {
         String formatted = IDR_FORMATTER.format(Double.valueOf(money));
