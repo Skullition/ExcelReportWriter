@@ -24,6 +24,8 @@ jobs:
         uses: gradle/wrapper-validation-action@v1
       - name: Execute jpackage
         run: ./gradlew --info --stacktrace jpackage
+      - name: Execute runtime
+        run: ./gradlew --info --stacktrace runtime
       - name: Upload DMG as an artifact
         uses: actions/upload-artifact@v2
         with:
@@ -49,3 +51,8 @@ jobs:
         with:
           name: excelreader-jdk${{ matrix.java }}-${{ matrix.os }}-rpm
           path: build/jpackage/*.rpm
+      - name: Upload runtime as an artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: excelreader-jdk${{ matrix.java }}-${{ matrix.os }}-zip
+          path: build/image/*
