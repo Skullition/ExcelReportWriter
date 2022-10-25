@@ -91,52 +91,27 @@ public class ReadExcel {
     }
 
     public static String getValueFromCell(Cell cell) {
-        String cellContent;
-        switch (cell.getCellType()) {
-            case NUMERIC:
-                cellContent = String.valueOf(cell.getNumericCellValue());
-                break;
-            case STRING:
-                cellContent = cell.getStringCellValue();
-                break;
-            case FORMULA:
-                switch (cell.getCachedFormulaResultType()) {
-                    case NUMERIC:
-                        cellContent = String.valueOf(cell.getNumericCellValue());
-                        break;
-                    case STRING:
-                        cellContent = cell.getStringCellValue();
-                        break;
-                    default:
-                        throw new IllegalStateException("Unexpected value: " + cell.getCellType());
-                }
-                break;
-            default:
-                throw new IllegalStateException("Unexpected value: " + cell.getCellType());
-        }
-        return cellContent;
+        return switch (cell.getCellType()) {
+            case NUMERIC -> String.valueOf(cell.getNumericCellValue());
+            case STRING -> cell.getStringCellValue();
+            case FORMULA -> switch (cell.getCachedFormulaResultType()) {
+                case NUMERIC -> String.valueOf(cell.getNumericCellValue());
+                case STRING -> cell.getStringCellValue();
+                default -> throw new IllegalStateException("Unexpected value: " + cell.getCellType());
+            };
+            default -> throw new IllegalStateException("Unexpected value: " + cell.getCellType());
+        };
     }
 
     private void CreatePdfBasedOnReportType(@NotNull List<String> cellValues, @NotNull List<String> cellValuesExtra) throws DocumentException, IOException {
         String dataType = cellValues.get(0);
 //        System.out.println(cellValues);
         switch (dataType) {
-            case "Retail":
-                createRetail(cellValues);
-                break;
-            case "B2B":
-                createBTBOrNonBinus(cellValues, false);
-                break;
-
-            case "R&B":
-                createRNB(cellValues, cellValuesExtra);
-                break;
-
-            case "Non BINUS":
-                createBTBOrNonBinus(cellValues, true);
-                break;
-            default:
-                System.out.println(dataType + "is not a supported type.");
+            case "Retail" -> createRetail(cellValues);
+            case "B2B" -> createBTBOrNonBinus(cellValues, false);
+            case "R&B" -> createRNB(cellValues, cellValuesExtra);
+            case "Non BINUS" -> createBTBOrNonBinus(cellValues, true);
+            default -> System.out.println(dataType + "is not a supported type.");
         }
     }
 
@@ -152,7 +127,7 @@ public class ReadExcel {
 
     private Document createDocument(List<String> cellValues) throws DocumentException, FileNotFoundException {
         Document document = new Document(PageSize.A4.rotate());
-        PdfWriter.getInstance(document, new FileOutputStream(cellValues.get(1) + cellValues.get(3) + ".pdf"));
+        PdfWriter.getInstance(document, new FileOutputStream(cellValues.get(1) + "-"+  cellValues.get(3) + ".pdf"));
         document.open();
 
         addPdfHeader(document, cellValues.get(1), cellValues.get(2), cellValues.get(3), cellValues.get(cellValues.size() - 1));
