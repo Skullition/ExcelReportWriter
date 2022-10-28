@@ -16,8 +16,14 @@
     </rowConstraints>
    <StackPane prefHeight="150.0" prefWidth="200.0" GridPane.columnSpan="2" GridPane.rowSpan="2">
       <children>
-          <TableView fx:id="tableView" prefHeight="200.0" prefWidth="200.0" />
+          <TableView fx:id="tableView" prefHeight="200.0" prefWidth="200.0">
+            <StackPane.margin>
+               <Insets left="5.0" right="5.0" />
+            </StackPane.margin></TableView>
       </children>
+      <GridPane.margin>
+         <Insets right="5.0" />
+      </GridPane.margin>
    </StackPane>
     <Label fx:id="fileNameLabel" alignment="CENTER" text="No File Selected" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER" />
    <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="2">

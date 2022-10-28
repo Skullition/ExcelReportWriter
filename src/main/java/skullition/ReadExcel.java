@@ -85,6 +85,7 @@ public class ReadExcel {
                 }
                 CreatePdfBasedOnReportType(cellValues, cellValuesExtra);
             }
+            workbook.close();
         } catch (IOException | DocumentException | InvalidFormatException e) {
             e.printStackTrace();
         }
@@ -127,7 +128,7 @@ public class ReadExcel {
 
     private Document createDocument(List<String> cellValues) throws DocumentException, FileNotFoundException {
         Document document = new Document(PageSize.A4.rotate());
-        PdfWriter.getInstance(document, new FileOutputStream(cellValues.get(1) + "-"+  cellValues.get(3) + ".pdf"));
+        PdfWriter.getInstance(document, new FileOutputStream(cellValues.get(1) + " - "+  cellValues.get(3) + ".pdf"));
         document.open();
 
         addPdfHeader(document, cellValues.get(1), cellValues.get(2), cellValues.get(3), cellValues.get(cellValues.size() - 1));
@@ -169,7 +170,9 @@ public class ReadExcel {
 
     private void addRetailTable(@NotNull Document document, @NotNull List<String> cellValues) throws DocumentException {
         Font fontHelvetica = new Font(Font.FontFamily.HELVETICA);
-        document.add(new Paragraph("Rincian Transaksi Retail", fontHelvetica));
+        Paragraph paragraph = new Paragraph("Rincian Transaksi Retail", fontHelvetica);
+        paragraph.setSpacingAfter(10f);
+        document.add(paragraph);
         PdfPTable headerTable = new PdfPTable(8);
         headerTable.addCell(createHeaderCell("Nama Kursus"));
         headerTable.addCell(createHeaderCell("Harga Kursus"));
@@ -210,11 +213,14 @@ public class ReadExcel {
 
     private void addSecondaryTable(Document document, List<String> cellValues, boolean isNonBinus) throws DocumentException {
         Font fontHelvetica = new Font(Font.FontFamily.HELVETICA);
+        Paragraph paragraph;
         if (isNonBinus) {
-            document.add(new Paragraph("Rincian Transaksi", fontHelvetica));
+            paragraph = new Paragraph("Rincian Transaksi", fontHelvetica);
         } else {
-            document.add(new Paragraph("Rincian Transaksi B2B"));
+            paragraph = new Paragraph("Rincian Transaksi B2B");
         }
+        paragraph.setSpacingAfter(10f);
+        document.add(paragraph);
         PdfPTable headerTable = new PdfPTable(8);
         headerTable.addCell(createHeaderCell("Nama Kursus"));
         headerTable.addCell(createHeaderCell("Harga Kursus"));

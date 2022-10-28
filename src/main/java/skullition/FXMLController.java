@@ -113,7 +113,13 @@ public class FXMLController implements Initializable {
             addTableFromArray(cellValues);
         }
 
+
         tableView.getColumns().setAll(reportTypeColumn, personNameColumn, emailColumn, periodColumn, courseNameColumn, coursePriceColumn, transactionAmountColumn, totalPaymentGatewayColumn, cutPaymentGatewayColumn, administrationColumn, incomePercentageColumn, incomeBeforeTaxColumn, taxPercentageColumn, taxAmountColumn, endIncomeColumn);
+        try {
+            workbook.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private void addTableFromArray(List<String> cellValues) {
