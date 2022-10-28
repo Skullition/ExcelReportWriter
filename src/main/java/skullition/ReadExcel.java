@@ -4,6 +4,9 @@ import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
@@ -11,8 +14,13 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -20,6 +28,7 @@ import java.util.List;
 import java.util.Locale;
 
 public class ReadExcel {
+    public static final Logger LOGGER = LogManager.getLogger();
     /**
      * String of URL location with GreatNusa image
      */
@@ -27,6 +36,7 @@ public class ReadExcel {
     public static final BaseColor DARK_BLUE = new BaseColor(68, 114, 196);
     public static final BaseColor LIGHT_BLUE = new BaseColor(221, 235, 247);
     public static final NumberFormat IDR_FORMATTER = NumberFormat.getInstance(new Locale("ind"));
+    public static final String PDF_DIRECTORY = System.getProperty("user.dir") + File.separator + "PDF Files";
     public static Image GREATNUSA_IMAGE;
     /**
      * boolean value of whether {@link #createRNB(List, List) createRNB} should be called or not
@@ -49,6 +59,19 @@ public class ReadExcel {
     public static String formatStringToIdrCurrency(String money) {
         String formatted = IDR_FORMATTER.format(Double.valueOf(money));
         return "Rp. " + formatted;
+    }
+
+    public static String getValueFromCell(Cell cell) {
+        return switch (cell.getCellType()) {
+            case NUMERIC -> String.valueOf(cell.getNumericCellValue());
+            case STRING -> cell.getStringCellValue();
+            case FORMULA -> switch (cell.getCachedFormulaResultType()) {
+                case NUMERIC -> String.valueOf(cell.getNumericCellValue());
+                case STRING -> cell.getStringCellValue();
+                default -> throw new IllegalStateException("Unexpected value: " + cell.getCellType());
+            };
+            default -> throw new IllegalStateException("Unexpected value: " + cell.getCellType());
+        };
     }
 
     /**
@@ -91,19 +114,6 @@ public class ReadExcel {
         }
     }
 
-    public static String getValueFromCell(Cell cell) {
-        return switch (cell.getCellType()) {
-            case NUMERIC -> String.valueOf(cell.getNumericCellValue());
-            case STRING -> cell.getStringCellValue();
-            case FORMULA -> switch (cell.getCachedFormulaResultType()) {
-                case NUMERIC -> String.valueOf(cell.getNumericCellValue());
-                case STRING -> cell.getStringCellValue();
-                default -> throw new IllegalStateException("Unexpected value: " + cell.getCellType());
-            };
-            default -> throw new IllegalStateException("Unexpected value: " + cell.getCellType());
-        };
-    }
-
     private void CreatePdfBasedOnReportType(@NotNull List<String> cellValues, @NotNull List<String> cellValuesExtra) throws DocumentException, IOException {
         String dataType = cellValues.get(0);
 //        System.out.println(cellValues);
@@ -128,7 +138,14 @@ public class ReadExcel {
 
     private Document createDocument(List<String> cellValues) throws DocumentException, FileNotFoundException {
         Document document = new Document(PageSize.A4.rotate());
-        PdfWriter.getInstance(document, new FileOutputStream(cellValues.get(1) + " - "+  cellValues.get(3) + ".pdf"));
+        try {
+            Files.createDirectory(Paths.get(PDF_DIRECTORY));
+        } catch (IOException e) {
+            LOGGER.log(Level.DEBUG, e);
+        }
+        FileOutputStream fileOutputStream = new FileOutputStream(PDF_DIRECTORY + File.separator + cellValues.get(1) + " - " + cellValues.get(3) + ".pdf");
+
+        PdfWriter.getInstance(document, fileOutputStream);
         document.open();
 
         addPdfHeader(document, cellValues.get(1), cellValues.get(2), cellValues.get(3), cellValues.get(cellValues.size() - 1));
