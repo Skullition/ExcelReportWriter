@@ -3,10 +3,7 @@ package skullition;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.GridPane;
 import javafx.stage.FileChooser;
@@ -131,5 +128,8 @@ public class FXMLController implements Initializable {
     private void makePdf(ActionEvent event) {
         ReadExcel readExcel = new ReadExcel();
         readExcel.createPdf(chosenFile);
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setHeaderText("PDF Files have been created.");
+        alert.show();
     }
 }
