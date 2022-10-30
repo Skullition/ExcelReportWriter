@@ -85,6 +85,7 @@ public class ReadExcel {
             XSSFWorkbook workbook = new XSSFWorkbook(file);
             XSSFSheet sheet = workbook.getSheetAt(0);
 
+            tryCreateDirectory();
 
             for (Row row : sheet) {
                 // Iterate through all column for each row
@@ -114,6 +115,14 @@ public class ReadExcel {
         }
     }
 
+    private void tryCreateDirectory() {
+        try {
+            Files.createDirectory(Paths.get(PDF_DIRECTORY));
+        } catch (IOException e) {
+            LOGGER.log(Level.DEBUG, e);
+        }
+    }
+
     private void CreatePdfBasedOnReportType(@NotNull List<String> cellValues, @NotNull List<String> cellValuesExtra) throws DocumentException, IOException {
         String dataType = cellValues.get(0);
 //        System.out.println(cellValues);
@@ -138,12 +147,8 @@ public class ReadExcel {
 
     private Document createDocument(List<String> cellValues) throws DocumentException, FileNotFoundException {
         Document document = new Document(PageSize.A4.rotate());
-        try {
-            Files.createDirectory(Paths.get(PDF_DIRECTORY));
-        } catch (IOException e) {
-            LOGGER.log(Level.DEBUG, e);
-        }
-        FileOutputStream fileOutputStream = new FileOutputStream(PDF_DIRECTORY + File.separator + cellValues.get(1) + " - " + cellValues.get(3) + ".pdf");
+        String fileName = PDF_DIRECTORY + File.separator + cellValues.get(1) + " - " + cellValues.get(3) + ".pdf";
+        FileOutputStream fileOutputStream = new FileOutputStream(fileName);
 
         PdfWriter.getInstance(document, fileOutputStream);
         document.open();
