@@ -47,7 +47,7 @@ public class ReadExcel {
         try {
             GREATNUSA_IMAGE = Image.getInstance(new URL(GREATNUSA_IMAGE_URL));
         } catch (BadElementException | IOException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.ERROR, e);
         }
     }
 
@@ -111,7 +111,7 @@ public class ReadExcel {
             }
             workbook.close();
         } catch (IOException | DocumentException | InvalidFormatException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.ERROR, e);
         }
     }
 
