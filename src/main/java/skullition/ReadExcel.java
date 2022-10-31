@@ -146,15 +146,10 @@ public class ReadExcel {
     }
 
     private Document createDocument(List<String> cellValues) throws DocumentException, FileNotFoundException {
-        Document document = new Document(PageSize.A4.rotate());
-        String fileName = PDF_DIRECTORY + File.separator + cellValues.get(1) + " - " + cellValues.get(3) + ".pdf";
-        FileOutputStream fileOutputStream = new FileOutputStream(fileName);
+        Document file = createFile(cellValues);
 
-        PdfWriter.getInstance(document, fileOutputStream);
-        document.open();
-
-        addPdfHeader(document, cellValues.get(1), cellValues.get(2), cellValues.get(3), cellValues.get(cellValues.size() - 1));
-        return document;
+        addPdfHeader(file, cellValues.get(1), cellValues.get(2), cellValues.get(3), cellValues.get(cellValues.size() - 1));
+        return file;
     }
 
 
@@ -166,9 +161,7 @@ public class ReadExcel {
         }
         RNB_FLAG = false;
         // Create new Document
-        Document document = new Document(PageSize.A4.rotate());
-        PdfWriter.getInstance(document, new FileOutputStream(cellValues.get(1) + ".pdf"));
-        document.open();
+        Document document = createFile(cellValues);
 
         double totalDouble = Double.parseDouble(cellValues.get(cellValues.size() - 1)) + Double.parseDouble(cellValuesExtra.get(cellValuesExtra.size() - 1));
         addPdfHeader(document, cellValues.get(1), cellValues.get(2), cellValues.get(3), String.valueOf(totalDouble));
@@ -177,6 +170,15 @@ public class ReadExcel {
         addSecondaryTable(document, cellValuesExtra, false);
 
         document.close();
+    }
+
+    private Document createFile(List<String> cellValues) throws FileNotFoundException, DocumentException {
+        Document document = new Document(PageSize.A4.rotate());
+        String fileName = PDF_DIRECTORY + File.separator + cellValues.get(1) + " - " + cellValues.get(3) + ".pdf";
+        FileOutputStream fileOutputStream = new FileOutputStream(fileName);
+        PdfWriter.getInstance(document, fileOutputStream);
+        document.open();
+        return document;
     }
 
 
